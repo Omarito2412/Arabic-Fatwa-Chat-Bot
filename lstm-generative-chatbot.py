@@ -7,18 +7,16 @@ from seq2seq.models import AttentionSeq2Seq
 from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
 
-LEN_LIMIT = 200
 BATCH_SIZE = 32
-NUM_WORDS = 80000
-MAX_LEN = 15 #Padding length
-LSTM_EMBED = 128
+NUM_WORDS = 1000
+MAX_LEN = 25
 
-tokenizer = cPickle.load(open("lstm-tokenizer.pickle", "rb"))
+tokenizer = cPickle.load(open("models/lstm-seq2seq-tokenizer.pickle", "rb"))
 model = Sequential()
 model.add(Embedding(NUM_WORDS, 200, input_length=MAX_LEN))
-attn = AttentionSeq2Seq(batch_input_shape=(None, 15, 200), hidden_dim=10, output_length=MAX_LEN, output_dim=NUM_WORDS, depth=1)
+attn = AttentionSeq2Seq(batch_input_shape=(None, MAX_LEN, 200), hidden_dim=10, output_length=MAX_LEN, output_dim=NUM_WORDS, depth=1)
 model.add(attn)
-model.load_weights("lstm-seq2seq.h5")
+model.load_weights("models/lstm-seq2seq.h5")
 
 index2word = dict([(v, k) for (k,v) in tokenizer.word_index.items()])
 index2word[0] = "PAD"

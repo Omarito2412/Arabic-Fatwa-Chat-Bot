@@ -14,7 +14,6 @@ from six.moves import cPickle
 BATCH_SIZE = 32
 NUM_WORDS = 1000
 MAX_LEN = 25
-LSTM_EMBED = 128
 
 def batches_generator(train_data, batch_size=32):
     # For OHE inputs
@@ -57,8 +56,8 @@ Answers = pad_sequences(Answers, padding='post', truncating='post', maxlen=MAX_L
 
 model = Sequential()
 model.add(Embedding(NUM_WORDS, 200, input_length=MAX_LEN))
-attn = AttentionSeq2Seq(batch_input_shape=(None, 15, 200), hidden_dim=10, output_length=MAX_LEN, output_dim=NUM_WORDS, depth=1)
+attn = AttentionSeq2Seq(batch_input_shape=(None, MAX_LEN, 200), hidden_dim=10, output_length=MAX_LEN, output_dim=NUM_WORDS, depth=1)
 model.add(attn)
 model.compile(loss='sparse_categorical_crossentropy', optimizer='adam')
-model.fit(Questions, np.expand_dims(Answers, 2), batch_size=BATCH_SIZE, epochs=25)
+model.fit(Questions, np.expand_dims(Answers, 2), batch_size=BATCH_SIZE, epochs=10)
 model.save("models/lstm-seq2seq.h5")
